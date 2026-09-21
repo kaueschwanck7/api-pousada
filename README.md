@@ -105,6 +105,6 @@ O environment `Local` (dentro de `bruno/environments`) define `baseUrl = http://
 
 ## Vídeo de demonstração
 
-> 🎥 **Link do vídeo:** _[cole aqui o link público do vídeo de demonstração]_
+> 🎥 **Link do vídeo:** 
 
 O vídeo apresenta o tema e o recurso escolhido, o repositório, a API sendo iniciada com `dotnet run`, uma explicação breve do `record`, do DTO de entrada, da `List<T>` e das rotas, além da execução no Bruno de todas as requisições (GET lista, GET por id, POST, PUT, DELETE), mostrando os códigos `200`, `201`, `204` e um `404`.
