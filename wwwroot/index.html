@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pousada Paradiso - Demonstração de Gestão de Quartos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Cabeçalho Principal -->
+  <header class="header">
+    <div class="header-content">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🏨</span>
+        <div>
+          <h1 class="brand-title">Pousada Paradiso</h1>
+          <p class="brand-subtitle">Painel de Demonstração de Quartos</p>
+        </div>
+      </div>
+      <span class="badge badge-demo">Modo Demonstração</span>
+    </div>
+  </header>
+
+  <!-- Banner de Aviso de Dados Fictícios -->
+  <div class="demo-banner" role="status" aria-live="polite">
+    <div class="banner-inner">
+      <span class="banner-icon" aria-hidden="true">ℹ️</span>
+      <div>
+        <strong>Aviso de Demonstração:</strong> Esta interface utiliza exclusivamente dados fictícios locais em memória.
+        <strong>Nenhuma conexão com o backend ou banco de dados foi realizada.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <main class="container">
+    <div class="dashboard-grid">
+      
+      <!-- Seção: Lista de Quartos -->
+      <section class="card" aria-labelledby="quartos-heading">
+        <div class="card-header">
+          <div>
+            <h2 id="quartos-heading" class="card-title">Quartos da Pousada</h2>
+            <p class="card-description">Visualização dos quartos cadastrados (dados simulados em memória)</p>
+          </div>
+          <div class="stats-pills" id="stats-container" aria-label="Resumo de quartos">
+            <!-- Estatísticas populadas via JS -->
+          </div>
+        </div>
+
+        <div id="lista-quartos" class="rooms-list" role="list">
+          <!-- Itens renderizados dinamicamente pelo app.js -->
+        </div>
+      </section>
+
+      <!-- Seção: Formulário Visual para Ação Futura -->
+      <section class="card" aria-labelledby="form-heading">
+        <div class="card-header">
+          <div>
+            <h2 id="form-heading" class="card-title">Cadastrar Novo Quarto</h2>
+            <p class="card-description">
+              Formulário visual para a ação futura (equivalente ao <code>POST /api/quartos</code>).
+            </p>
+          </div>
+        </div>
+
+        <!-- Área de Mensagens de Feedback -->
+        <div id="mensagem-feedback" class="feedback-container" aria-live="polite"></div>
+
+        <form id="form-quarto" novalidate>
+          <div class="form-group">
+            <label for="titulo-quarto">
+              Identificação / Título do Quarto <span class="required" aria-hidden="true">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="titulo-quarto" 
+              name="titulo" 
+              placeholder="Ex.: Quarto 301 - Suíte Luxo" 
+              required
+              autocomplete="off"
+            >
+            <span class="field-hint">Nome identificador do quarto a ser cadastrado.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="disponibilidade-quarto">Disponibilidade Inicial</label>
+            <select id="disponibilidade-quarto" name="disponivel">
+              <option value="true">Disponível para reservas</option>
+              <option value="false">Ocupado / Em manutenção</option>
+            </select>
+            <span class="field-hint">Define o status padrão no momento da inclusão.</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="btn-cadastrar" class="btn btn-primary">
+              <span aria-hidden="true">➕</span> Adicionar Quarto (Simulação)
+            </button>
+            <button type="reset" id="btn-limpar" class="btn btn-secondary">
+              Limpar Campos
+            </button>
+          </div>
+        </form>
+
+        <div class="info-box">
+          <small>
+            <strong>Nota Técnica:</strong> O envio deste formulário adiciona o quarto apenas ao estado local do navegador. Em uma integração futura, os dados serão encaminhados via requisição HTTP para a Minimal API.
+          </small>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Interface de Demonstração &bull; Disciplina de Desenvolvimento Back-End (AP1)</p>
+      <p class="footer-note">Construída com HTML, CSS e JavaScript puros &bull; Sem dependências externas</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
