@@ -1,0 +1,21 @@
+info:
+  name: 02 - Buscar Reserva por ID
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/reservas/1"
+  auth: inherit
+
+assert:
+  - expr: res.status
+    operator: eq
+    value: 200
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

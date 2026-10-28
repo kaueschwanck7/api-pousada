@@ -1,0 +1,32 @@
+info:
+  name: 04 - Atualizar Reserva
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/reservas/1"
+  auth: inherit
+  body:
+    type: json
+    data: |
+      {
+        "nomeHospede": "Carlos Eduardo Silva Atualizado",
+        "dataCheckin": "2026-11-01",
+        "dataCheckout": "2026-11-06",
+        "numeroQuarto": 101,
+        "quantidadeHospedes": 3,
+        "status": "Confirmada"
+      }
+
+assert:
+  - expr: res.status
+    operator: eq
+    value: 200
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -3,123 +3,325 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pousada Paradiso - Demonstração de Gestão de Quartos</title>
+  <title>Pousada - Gestão de Reservas</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Cabeçalho Principal -->
-  <header class="header">
-    <div class="header-content">
-      <div class="brand">
-        <span class="brand-icon" aria-hidden="true">🏨</span>
-        <div>
-          <h1 class="brand-title">Pousada Paradiso</h1>
-          <p class="brand-subtitle">Painel de Demonstração de Quartos</p>
-        </div>
-      </div>
-      <span class="badge badge-demo">Modo Demonstração</span>
-    </div>
-  </header>
 
-  <!-- Banner de Aviso de Dados Fictícios -->
-  <div class="demo-banner" role="status" aria-live="polite">
-    <div class="banner-inner">
-      <span class="banner-icon" aria-hidden="true">ℹ️</span>
-      <div>
-        <strong>Aviso de Demonstração:</strong> Esta interface utiliza exclusivamente dados fictícios locais em memória.
-        <strong>Nenhuma conexão com o backend ou banco de dados foi realizada.</strong>
-      </div>
+  <!-- Overlay de Carregamento Global -->
+  <div id="loading-overlay" class="loading-overlay hidden" aria-hidden="true" role="status">
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <p id="loading-message">Processando requisição...</p>
     </div>
   </div>
 
+  <!-- Container de Mensagens / Toasts -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Cabeçalho Principal -->
+  <header class="app-header">
+    <div class="container header-container">
+      <div class="brand">
+        <span class="brand-logo" aria-hidden="true">🏨</span>
+        <div>
+          <h1 class="brand-name">Pousada</h1>
+          <p class="brand-tagline">Sistema de Gerenciamento de Reservas</p>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="api-status-badge" id="api-status-badge" title="Status da conexão com a API">
+          <span class="status-dot dot-online" id="status-dot"></span>
+          <span id="status-text">Conectado à API</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
   <!-- Conteúdo Principal -->
-  <main class="container">
-    <div class="dashboard-grid">
+  <main class="container main-content">
+
+    <!-- Painel de Métricas / Resumo -->
+    <section class="metrics-grid" aria-label="Resumo das reservas">
+      <div class="metric-card card-total">
+        <div class="metric-icon" aria-hidden="true">📋</div>
+        <div class="metric-info">
+          <span class="metric-label">Total de Reservas</span>
+          <strong class="metric-value" id="stat-total">0</strong>
+        </div>
+      </div>
+
+      <div class="metric-card card-confirmed">
+        <div class="metric-icon" aria-hidden="true">✅</div>
+        <div class="metric-info">
+          <span class="metric-label">Confirmadas</span>
+          <strong class="metric-value" id="stat-confirmadas">0</strong>
+        </div>
+      </div>
+
+      <div class="metric-card card-pending">
+        <div class="metric-icon" aria-hidden="true">⏳</div>
+        <div class="metric-info">
+          <span class="metric-label">Pendentes</span>
+          <strong class="metric-value" id="stat-pendentes">0</strong>
+        </div>
+      </div>
+
+      <div class="metric-card card-concluded">
+        <div class="metric-icon" aria-hidden="true">🎉</div>
+        <div class="metric-info">
+          <span class="metric-label">Concluídas / Canceladas</span>
+          <strong class="metric-value" id="stat-outros">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Layout Grid: Formulário e Ações à esquerda/cima, Tabela e Busca à direita/baixo -->
+    <div class="app-layout">
       
-      <!-- Seção: Lista de Quartos -->
-      <section class="card" aria-labelledby="quartos-heading">
+      <!-- Painel Esquerdo: Formulário de Reserva -->
+      <section class="card form-section" aria-labelledby="form-title">
         <div class="card-header">
-          <div>
-            <h2 id="quartos-heading" class="card-title">Quartos da Pousada</h2>
-            <p class="card-description">Visualização dos quartos cadastrados (dados simulados em memória)</p>
+          <div class="header-with-badge">
+            <h2 id="form-title" class="card-title">Nova Reserva</h2>
+            <span id="badge-modo-edicao" class="badge-edit-mode hidden">Modo Edição</span>
           </div>
-          <div class="stats-pills" id="stats-container" aria-label="Resumo de quartos">
-            <!-- Estatísticas populadas via JS -->
-          </div>
+          <p class="card-subtitle">Cadastre ou atualize os dados da reserva do hóspede</p>
         </div>
 
-        <div id="lista-quartos" class="rooms-list" role="list">
-          <!-- Itens renderizados dinamicamente pelo app.js -->
-        </div>
-      </section>
-
-      <!-- Seção: Formulário Visual para Ação Futura -->
-      <section class="card" aria-labelledby="form-heading">
-        <div class="card-header">
-          <div>
-            <h2 id="form-heading" class="card-title">Cadastrar Novo Quarto</h2>
-            <p class="card-description">
-              Formulário visual para a ação futura (equivalente ao <code>POST /api/quartos</code>).
-            </p>
+        <form id="form-reserva" novalidate>
+          
+          <!-- ID da Reserva (Somente Leitura) -->
+          <div class="form-group" id="group-id" style="display: none;">
+            <label for="campo-id">Identificador da Reserva (ID)</label>
+            <input 
+              type="text" 
+              id="campo-id" 
+              name="id" 
+              readonly 
+              class="input-readonly"
+              placeholder="Gerado automaticamente pela API"
+            >
+            <span class="field-hint">O identificador é gerado e controlado exclusivamente pela API.</span>
           </div>
-        </div>
 
-        <!-- Área de Mensagens de Feedback -->
-        <div id="mensagem-feedback" class="feedback-container" aria-live="polite"></div>
-
-        <form id="form-quarto" novalidate>
+          <!-- Nome do Hóspede -->
           <div class="form-group">
-            <label for="titulo-quarto">
-              Identificação / Título do Quarto <span class="required" aria-hidden="true">*</span>
+            <label for="campo-nome">
+              Nome do Hóspede <span class="required" aria-hidden="true">*</span>
             </label>
             <input 
               type="text" 
-              id="titulo-quarto" 
-              name="titulo" 
-              placeholder="Ex.: Quarto 301 - Suíte Luxo" 
+              id="campo-nome" 
+              name="nomeHospede" 
+              placeholder="Ex.: Carolina Mendes" 
               required
-              autocomplete="off"
+              autocomplete="name"
             >
-            <span class="field-hint">Nome identificador do quarto a ser cadastrado.</span>
+            <span class="field-error" id="erro-nome"></span>
           </div>
 
+          <!-- Linha com Quarto e Quantidade de Hóspedes -->
+          <div class="form-row">
+            <div class="form-group col-half">
+              <label for="campo-quarto">
+                Nº do Quarto <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input 
+                type="number" 
+                id="campo-quarto" 
+                name="numeroQuarto" 
+                placeholder="Ex.: 104" 
+                min="1" 
+                required
+              >
+              <span class="field-error" id="erro-quarto"></span>
+            </div>
+
+            <div class="form-group col-half">
+              <label for="campo-hospedes">
+                Qtd. de Hóspedes <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input 
+                type="number" 
+                id="campo-hospedes" 
+                name="quantidadeHospedes" 
+                placeholder="Ex.: 2" 
+                min="1" 
+                max="20"
+                required
+              >
+              <span class="field-error" id="erro-hospedes"></span>
+            </div>
+          </div>
+
+          <!-- Linha com Datas de Check-in e Check-out -->
+          <div class="form-row">
+            <div class="form-group col-half">
+              <label for="campo-checkin">
+                Data de Check-in <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input 
+                type="date" 
+                id="campo-checkin" 
+                name="dataCheckin" 
+                required
+              >
+              <span class="field-error" id="erro-checkin"></span>
+            </div>
+
+            <div class="form-group col-half">
+              <label for="campo-checkout">
+                Data de Check-out <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input 
+                type="date" 
+                id="campo-checkout" 
+                name="dataCheckout" 
+                required
+              >
+              <span class="field-error" id="erro-checkout"></span>
+            </div>
+          </div>
+
+          <!-- Status da Reserva -->
           <div class="form-group">
-            <label for="disponibilidade-quarto">Disponibilidade Inicial</label>
-            <select id="disponibilidade-quarto" name="disponivel">
-              <option value="true">Disponível para reservas</option>
-              <option value="false">Ocupado / Em manutenção</option>
+            <label for="campo-status">
+              Status da Reserva <span class="required" aria-hidden="true">*</span>
+            </label>
+            <select id="campo-status" name="status" required>
+              <option value="Confirmada">Confirmada</option>
+              <option value="Pendente">Pendente</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Cancelada">Cancelada</option>
             </select>
-            <span class="field-hint">Define o status padrão no momento da inclusão.</span>
+            <span class="field-hint">Selecione o estado atual do atendimento da reserva.</span>
           </div>
 
+          <!-- Ações do Formulário -->
           <div class="form-actions">
-            <button type="submit" id="btn-cadastrar" class="btn btn-primary">
-              <span aria-hidden="true">➕</span> Adicionar Quarto (Simulação)
+            <button type="submit" id="btn-submit" class="btn btn-primary">
+              <span class="btn-icon" aria-hidden="true">💾</span>
+              <span id="btn-submit-text">Cadastrar Reserva</span>
             </button>
-            <button type="reset" id="btn-limpar" class="btn btn-secondary">
+
+            <button type="button" id="btn-cancelar-edicao" class="btn btn-secondary hidden">
+              Cancelar Edição
+            </button>
+
+            <button type="button" id="btn-limpar" class="btn btn-ghost">
               Limpar Campos
             </button>
           </div>
-        </form>
 
-        <div class="info-box">
-          <small>
-            <strong>Nota Técnica:</strong> O envio deste formulário adiciona o quarto apenas ao estado local do navegador. Em uma integração futura, os dados serão encaminhados via requisição HTTP para a Minimal API.
-          </small>
+        </form>
+      </section>
+
+      <!-- Painel Direito: Consulta e Tabela de Reservas -->
+      <section class="card table-section" aria-labelledby="table-title">
+        
+        <!-- Cabeçalho da Tabela e Barra de Consulta por ID -->
+        <div class="card-header table-header-flex">
+          <div>
+            <h2 id="table-title" class="card-title">Reservas Registradas</h2>
+            <p class="card-subtitle">Listagem em tempo real sincronizada com a API REST</p>
+          </div>
+
+          <!-- Barra de Consulta por ID -->
+          <div class="search-box-wrapper">
+            <form id="form-busca-id" class="search-form" role="search">
+              <label for="input-busca-id" class="sr-only">Consultar Reserva pelo ID</label>
+              <div class="search-input-group">
+                <input 
+                  type="number" 
+                  id="input-busca-id" 
+                  min="1" 
+                  placeholder="Consultar por ID..." 
+                  class="search-input"
+                >
+                <button type="submit" class="btn btn-search" title="Buscar reserva pelo ID">
+                  <span aria-hidden="true">🔍</span> Buscar
+                </button>
+                <button type="button" id="btn-limpar-busca" class="btn btn-ghost btn-sm hidden" title="Mostrar todas as reservas">
+                  ✕ Limpar
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+
+        <!-- Banner Informativo de Filtro Ativo -->
+        <div id="banner-filtro" class="banner-filtro hidden">
+          <span>Exibindo resultado exclusivo para a reserva com <strong>ID <span id="filtro-id-valor"></span></strong></span>
+          <button type="button" id="btn-remover-filtro" class="btn-link">Ver todas as reservas</button>
+        </div>
+
+        <!-- Tabela Responsiva de Reservas -->
+        <div class="table-responsive">
+          <table class="data-table" id="tabela-reservas">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 70px;">ID</th>
+                <th scope="col">Hóspede</th>
+                <th scope="col" style="width: 90px;">Quarto</th>
+                <th scope="col" style="width: 90px;">Hóspedes</th>
+                <th scope="col">Check-in</th>
+                <th scope="col">Check-out</th>
+                <th scope="col" style="width: 130px;">Status</th>
+                <th scope="col" style="width: 150px; text-align: center;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-reservas">
+              <!-- Linhas renderizadas dinamicamente via script.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State (Sem reservas ou não encontrada) -->
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-icon" aria-hidden="true">📭</div>
+          <h3 id="empty-title">Nenhuma reserva encontrada</h3>
+          <p id="empty-description">Não há registros retornados pela API no momento.</p>
+        </div>
+
       </section>
 
     </div>
   </main>
 
+  <!-- Modal de Confirmação de Exclusão -->
+  <div id="modal-exclusao" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-alert-icon" aria-hidden="true">⚠️</span>
+        <h3 id="modal-title" class="modal-title">Confirmar Exclusão</h3>
+      </div>
+      <div class="modal-body">
+        <p>Você tem certeza que deseja remover esta reserva?</p>
+        <div class="modal-reserva-info" id="modal-reserva-detalhes">
+          <!-- Detalhes da reserva a excluir -->
+        </div>
+        <p class="modal-warning">Esta ação excluirá o registro definitivamente da API.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn-cancelar-exclusao" class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btn-confirmar-exclusao" class="btn btn-danger">Sim, Excluir</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Rodapé -->
-  <footer class="footer">
-    <div class="footer-content">
-      <p>Interface de Demonstração &bull; Disciplina de Desenvolvimento Back-End (AP1)</p>
-      <p class="footer-note">Construída com HTML, CSS e JavaScript puros &bull; Sem dependências externas</p>
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p><strong>Pousada &bull; Gestão de Reservas</strong> &bull; Trabalho de Conclusão AP2 (Desenvolvimento Web)</p>
+      <p class="footer-subtext">Integração completa via Fetch API &bull; Minimal API ASP.NET Core (.NET 10) &bull; Persistência em JSON</p>
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

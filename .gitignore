@@ -1,2 +1,23 @@
+# Build & Compilação
 bin/
 obj/
+
+# Banco de Dados Local SQLite
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Arquivos de persistência legados
+reservas.json
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
