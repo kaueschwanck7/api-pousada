@@ -124,4 +124,4 @@ wwwroot/
 Link: https://drive.google.com/drive/folders/1mQLH6qK3THz5VH08QcmeXsywz1Qvaqy5?usp=sharing
 
 ### Vídeo da AP2:
-Link: [INSERIR_AQUI_O_LINK_DO_SEU_VIDEO_AP2]
+Link: https://youtu.be/uz5trOL_4c0
