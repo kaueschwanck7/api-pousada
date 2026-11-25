@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ApiPousada.Data;
 using ApiPousada.Models;
+using ApiPousada.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -200,10 +201,3 @@ app.MapDelete("/api/reservas/{id:int}", async (int id, AppDbContext db) =>
 });
 
 app.Run();
-
-// ============================================================================
-// MODELOS DA AP1 (QUARTOS)
-// ============================================================================
-record Quarto (int id, string titulo, bool disponivel);
-record QuartoDTO (string titulo);
-record QuartoAtualizadoDTO (string titulo, bool disponivel);

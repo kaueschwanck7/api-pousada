@@ -1,0 +1,21 @@
+meta {
+  name: 07 - Confirmar Exclusao (404)
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/reservas/{{idCriado}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}
+
+tests {
+  test("Status deve ser 404 Not Found", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

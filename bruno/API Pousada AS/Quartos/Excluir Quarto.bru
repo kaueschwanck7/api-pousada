@@ -1,0 +1,15 @@
+meta {
+  name: Excluir Quarto
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{baseUrl}}/api/quartos/3
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

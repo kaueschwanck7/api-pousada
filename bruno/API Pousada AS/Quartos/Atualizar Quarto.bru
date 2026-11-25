@@ -1,0 +1,26 @@
+meta {
+  name: Atualizar Quarto
+  type: http
+  seq: 13
+}
+
+put {
+  url: {{baseUrl}}/api/quartos/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "titulo": "Quarto 1 VIP",
+    "disponivel": false
+  }
+}
+
+assert {
+  res.status: eq 200
+}

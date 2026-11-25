@@ -1,0 +1,43 @@
+meta {
+  name: 08 - Criar Reserva para Teste de Persistencia
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/reservas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nomeHospede": "Teste Persistencia - Joao Pereira",
+    "dataCheckin": "2026-12-20",
+    "dataCheckout": "2026-12-25",
+    "numeroQuarto": 301,
+    "quantidadeHospedes": 2,
+    "status": "Confirmada"
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+tests {
+  test("Status deve ser 201 Created", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  test("Resposta deve conter id", function() {
+    expect(res.getBody().id).to.be.a('number');
+  });
+}
+
+script:post-response {
+  bru.setVar("idPersistencia", res.getBody().id);
+}

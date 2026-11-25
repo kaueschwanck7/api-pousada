@@ -1,0 +1,27 @@
+meta {
+  name: 03 - Buscar Reserva Criada
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/reservas/{{idCriado}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("Status deve ser 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Nome do hóspede deve ser correto", function() {
+    expect(res.getBody().nomeHospede).to.equal("Teste CRUD - Ana Silva");
+  });
+  test("Número do quarto deve ser 201", function() {
+    expect(res.getBody().numeroQuarto).to.equal(201);
+  });
+}

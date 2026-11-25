@@ -12,6 +12,9 @@ obj/
 # Arquivos de persistência legados
 reservas.json
 
+# Arquivo zip
+*.zip
+
 # IDEs e Editores
 .vscode/
 .idea/
