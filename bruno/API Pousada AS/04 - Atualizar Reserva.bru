@@ -1,0 +1,42 @@
+meta {
+  name: 04 - Atualizar Reserva
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/reservas/{{idCriado}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nomeHospede": "Teste CRUD - Ana Silva Atualizada",
+    "dataCheckin": "2026-12-10",
+    "dataCheckout": "2026-12-18",
+    "numeroQuarto": 202,
+    "quantidadeHospedes": 3,
+    "status": "Concluída"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("Status deve ser 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Nome atualizado corretamente", function() {
+    expect(res.getBody().nomeHospede).to.equal("Teste CRUD - Ana Silva Atualizada");
+  });
+  test("Quarto atualizado para 202", function() {
+    expect(res.getBody().numeroQuarto).to.equal(202);
+  });
+}

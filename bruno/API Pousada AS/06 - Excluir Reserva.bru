@@ -1,0 +1,21 @@
+meta {
+  name: 06 - Excluir Reserva
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/api/reservas/{{idCriado}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
+
+tests {
+  test("Status deve ser 204 No Content", function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

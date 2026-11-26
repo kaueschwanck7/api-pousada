@@ -1,0 +1,25 @@
+meta {
+  name: 09 - Consultar Reserva Apos Reiniciar API
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/reservas/{{idPersistencia}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("Status deve ser 200 OK após reinício", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Dados persistidos devem corresponder ao cadastro", function() {
+    expect(res.getBody().nomeHospede).to.equal("Teste Persistencia - Joao Pereira");
+    expect(res.getBody().numeroQuarto).to.equal(301);
+  });
+}

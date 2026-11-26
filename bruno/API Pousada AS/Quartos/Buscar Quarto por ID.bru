@@ -1,0 +1,15 @@
+meta {
+  name: Buscar Quarto por ID
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/quarto/1
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

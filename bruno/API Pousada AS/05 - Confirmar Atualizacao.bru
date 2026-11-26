@@ -1,0 +1,27 @@
+meta {
+  name: 05 - Confirmar Atualizacao
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/reservas/{{idCriado}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("Status deve ser 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Nome deve refletir atualização", function() {
+    expect(res.getBody().nomeHospede).to.equal("Teste CRUD - Ana Silva Atualizada");
+  });
+  test("Status deve ser Concluída", function() {
+    expect(res.getBody().status).to.equal("Concluída");
+  });
+}

@@ -1,127 +1,247 @@
-# API Pousada - Sistema de Gestão de Quartos e Reservas (AP1 & AP2)
+# API Pousada — Sistema de Gestão de Quartos e Reservas
 
-## Tema
+## Apresentação
 
-Pousada.
+A **API Pousada** é uma aplicação web desenvolvida com **ASP.NET Core (.NET 10)** no modelo **Minimal API**, com o tema **Pousada**, voltada para o gerenciamento de quartos e reservas de hóspedes.
 
-## Objetivo do Projeto
+### Contexto Acadêmico
 
-Sistema completo de gerenciamento para uma pousada:
-- **AP1 (Back-End):** Minimal API em ASP.NET Core para cadastro e controle de quartos.
-- **AP2 (Front-End & Persistência com ORM):** Interface web moderna, responsiva e acessível para gerenciamento de reservas de hóspedes, conectada à API REST com persistência relacional utilizando **Entity Framework Core e SQLite**.
+O projeto foi construído de forma evolutiva ao longo das avaliações da disciplina na ULBRA (Análise e Desenvolvimento de Sistemas):
 
----
+- **AP1:** Criação da Minimal API em ASP.NET Core com operações CRUD em memória para quartos (`/api/quartos`).
+- **AP2:** Implementação do recurso de reservas (`/api/reservas`) com **Entity Framework Core**, banco de dados relacional **SQLite** e interface web integrada na pasta `wwwroot/`.
+- **AS (Avaliação Semestral):** Consolidação e organização arquitetural do código por responsabilidades (`Models/`, `Dtos/`, `Data/`), limpeza do `Program.cs`, revisão do `.gitignore`, documentação completa e criação da Collection nativa do **Bruno** para testes completos de CRUD e persistência.
 
-## Requisitos do Sistema
+### Funcionalidades Existentes
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/)
-- Ferramenta global do Entity Framework Core (`dotnet-ef`)
-- Navegador web moderno (Chrome, Edge, Firefox, Safari)
-
----
-
-## Instalação e Preparação do Banco de Dados
-
-### 1. Instalar a ferramenta de migrations (caso ainda não possua):
-
-```bash
-dotnet tool install --global dotnet-ef
-```
-
-### 2. Criar e atualizar o banco de dados SQLite:
-
-Execute o comando de migrations para criar a estrutura do banco local (`pousada.db`):
-
-```bash
-dotnet ef database update
-```
-
-> **Nota sobre o Seed de Desenvolvimento:** A migration inicial já inclui um seed automático com **3 reservas padrão** (IDs 1, 2 e 3) para facilitar testes imediatos pelo avaliador, sem depender de banco pré-existente. O banco de dados local (`*.db`) é gerado sob demanda e está ignorado no Git.
+- Listagem, consulta por ID, cadastro, atualização e exclusão de **reservas** com persistência em SQLite.
+- Validação de campos obrigatórios e retorno padronizado dos códigos HTTP (`200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `404 Not Found`).
+- Listagem, consulta, cadastro, atualização e exclusão de **quartos** (rotas da AP1 preservadas).
+- Interface web responsiva em `wwwroot/` integrada à API via `Fetch API`.
 
 ---
 
-## Como Executar a Aplicação
+## Tecnologias Utilizadas
 
-No terminal, na pasta raiz do projeto, execute:
+- **C#** e **.NET 10**
+- **ASP.NET Core Minimal API**
+- **Entity Framework Core** (`Microsoft.EntityFrameworkCore.Sqlite` e `Microsoft.EntityFrameworkCore.Design`)
+- **SQLite**
+- **HTML5, CSS3 e JavaScript (Vanilla JS)**
+- **Bruno** (Collection nativa `.bru` para testes de API)
 
-```bash
-dotnet run --urls http://localhost:5050
-```
+---
 
-Abra o navegador em:
+## Requisitos
+
+Para executar o projeto localmente, é necessário ter instalado:
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Git](https://git-scm.com/)
+- Ferramenta de linha de comando do EF Core (`dotnet-ef`), caso deseje rodar migrations manualmente:
+  ```bash
+  dotnet tool install --global dotnet-ef
+  ```
+- [Bruno](https://www.usebruno.com/) (para executar a Collection de testes)
+- Navegador web moderno (Chrome, Edge, Firefox, etc.)
+
+---
+
+## Preparação e Execução
+
+1. **Clonar o repositório:**
+   ```bash
+   git clone https://github.com/kaueschwanck7/api-pousada.git
+   cd api-pousada
+   ```
+
+2. **Restaurar as dependências:**
+   ```bash
+   dotnet restore
+   ```
+
+3. **Preparar o banco de dados (Migrations):**
+   A aplicação aplica as migrations automaticamente na inicialização (`db.Database.Migrate()`), mas você também pode aplicar manualmente com:
+   ```bash
+   dotnet ef database update
+   ```
+
+4. **Compilar o projeto:**
+   ```bash
+   dotnet build
+   ```
+
+5. **Executar a aplicação:**
+   ```bash
+   dotnet run
+   ```
+   A API será iniciada na porta configurada em `Properties/launchSettings.json`: `http://localhost:5050`.
+
+6. **Acessar pelo navegador:**
+   Abra `http://localhost:5050` para utilizar a interface gráfica de gerenciamento de reservas.
+
+---
+
+## Estrutura de Pastas
 
 ```text
-http://localhost:5050
+API-pousada/
+├── Data/
+│   └── AppDbContext.cs
+├── Dtos/
+│   ├── QuartoAtualizadoDTO.cs
+│   ├── QuartoDTO.cs
+│   ├── ReservaAtualizadaDTO.cs
+│   └── ReservaDTO.cs
+├── Migrations/
+│   ├── 20261027223442_CriacaoTabelaReservas.cs
+│   ├── 20261027223442_CriacaoTabelaReservas.Designer.cs
+│   └── AppDbContextModelSnapshot.cs
+├── Models/
+│   ├── Quarto.cs
+│   └── Reserva.cs
+├── Properties/
+│   └── launchSettings.json
+├── bruno/
+│   ├── API Pousada AS/
+│   │   ├── bruno.json
+│   │   ├── environments/
+│   │   │   └── Local.bru
+│   │   ├── Quartos/
+│   │   │   ├── Listar Quartos.bru
+│   │   │   ├── Buscar Quarto por ID.bru
+│   │   │   ├── Criar Quarto.bru
+│   │   │   ├── Atualizar Quarto.bru
+│   │   │   └── Excluir Quarto.bru
+│   │   ├── 01 - Listar Reservas.bru
+│   │   ├── 02 - Criar Reserva.bru
+│   │   ├── 03 - Buscar Reserva Criada.bru
+│   │   ├── 04 - Atualizar Reserva.bru
+│   │   ├── 05 - Confirmar Atualizacao.bru
+│   │   ├── 06 - Excluir Reserva.bru
+│   │   ├── 07 - Confirmar Exclusao (404).bru
+│   │   ├── 08 - Criar Reserva para Teste de Persistencia.bru
+│   │   └── 09 - Consultar Reserva Apos Reiniciar API.bru
+│   ├── Api Pousada AP1/
+│   └── Api Pousada AP2/
+├── wwwroot/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── .gitignore
+├── ApiPousada.csproj
+├── appsettings.json
+├── Program.cs
+├── README.md
+└── ROTEIRO_VIDEO_AS.md
 ```
 
-> **Frontend Integrado:** O frontend está localizado na pasta `wwwroot/` e é servido nativamente pelo ASP.NET Core via `UseDefaultFiles()` e `UseStaticFiles()`. O CORS está habilitado para permitir acessos de origens cruzadas caso desejado.
+### Responsabilidade de cada diretório/arquivo
+
+- **`Models/`**: Contém as entidades de domínio da aplicação (`Reserva.cs` e `Quarto.cs`).
+- **`Dtos/`**: Contém os *Data Transfer Objects* (records) usados para receber dados nas requisições `POST` e `PUT` (`ReservaDTO.cs`, `ReservaAtualizadaDTO.cs`, `QuartoDTO.cs`, `QuartoAtualizadoDTO.cs`).
+- **`Data/`**: Contém o `AppDbContext.cs`, responsável pela configuração do Entity Framework Core, pelo `DbSet<Reserva>` e pelo seed inicial de 3 reservas.
+- **`Migrations/`**: Histórico de migrações do EF Core que definem a estrutura da tabela `Reservas` no SQLite.
+- **`wwwroot/`**: Arquivos estáticos do frontend (`index.html`, `style.css`, `script.js`) servidos pela própria aplicação ASP.NET Core.
+- **`bruno/`**: Contém a Collection nativa da AS (`bruno/API Pousada AS/`) além das coleções anteriores da AP1 e AP2.
+- **`Program.cs`**: Ponto de entrada da aplicação. Configura os serviços (DbContext, SQLite, CORS), middlewares (arquivos estáticos), aplica migrations pendentes e define os endpoints da Minimal API.
 
 ---
 
-## Endpoints da API
+## Documentação da API
 
-### Reservas (AP2 - Entity Framework Core + SQLite)
+### Reservas (`/api/reservas` — Persistência em SQLite)
 
-| Método | Rota | Descrição | Códigos HTTP |
+| Método | Rota | Descrição | Status HTTP Esperados |
 |---|---|---|---|
 | `GET` | `/api/reservas` | Lista todas as reservas cadastradas | `200 OK` |
-| `GET` | `/api/reservas/{id}` | Consulta uma reserva específica por ID | `200 OK` / `404 Not Found` |
-| `POST` | `/api/reservas` | Cadastra uma nova reserva de hóspede | `201 Created` / `400 Bad Request` |
-| `PUT` | `/api/reservas/{id}` | Atualiza os dados de uma reserva | `200 OK` / `400 Bad Request` / `404 Not Found` |
-| `DELETE` | `/api/reservas/{id}` | Exclui definitivamente uma reserva | `204 NoContent` / `404 Not Found` |
+| `GET` | `/api/reservas/{id}` | Consulta uma reserva específica pelo ID | `200 OK`, `404 Not Found` |
+| `POST` | `/api/reservas` | Cadastra uma nova reserva | `201 Created`, `400 Bad Request` |
+| `PUT` | `/api/reservas/{id}` | Atualiza os dados de uma reserva existente | `200 OK`, `400 Bad Request`, `404 Not Found` |
+| `DELETE` | `/api/reservas/{id}` | Exclui uma reserva do banco de dados | `204 No Content`, `404 Not Found` |
 
-#### Exemplo de JSON para POST / PUT (`/api/reservas`):
+#### Exemplo de JSON — Criação (`POST /api/reservas`)
 
 ```json
 {
-  "nomeHospede": "Carolina Mendes",
-  "dataCheckin": "2026-11-20",
-  "dataCheckout": "2026-11-25",
-  "numeroQuarto": 104,
+  "nomeHospede": "Teste CRUD - Ana Silva",
+  "dataCheckin": "2026-12-10",
+  "dataCheckout": "2026-12-15",
+  "numeroQuarto": 201,
   "quantidadeHospedes": 2,
   "status": "Confirmada"
 }
 ```
 
----
+#### Exemplo de JSON — Atualização (`PUT /api/reservas/{id}`)
 
-### Quartos (AP1 - Minimal API em Memória)
-
-| Método | Rota | Descrição |
-|---|---|---|
-| `GET` | `/` | Verifica se a API está no ar (`"Api da Pousada esta no ar!"`) |
-| `GET` | `/api/quartos` | Lista todos os quartos |
-| `GET` | `/api/quarto/{id}` | Busca um quarto pelo ID |
-| `POST` | `/api/quartos` | Cadastra um novo quarto |
-| `PUT` | `/api/quartos/{id}` | Atualiza um quarto |
-| `DELETE` | `/api/quartos/{id}` | Remove um quarto |
-
----
-
-## Testes Automatizados com o Bruno
-
-As coleções de teste estão organizadas na pasta `bruno/`:
-
-- **AP1 (Quartos):** `bruno/Api Pousada AP1/`
-- **AP2 (Reservas):** `bruno/Api Pousada AP2/` (inclui asserções automáticas de códigos de resposta: `200`, `201`, `204` e `404`).
-
----
-
-## Estrutura do Frontend (`wwwroot/`)
-
-```text
-wwwroot/
-├── index.html   # Estrutura semântica, cards de métricas, formulário e tabela
-├── style.css    # Design elegante, responsividade mobile-first e animações
-└── script.js    # Lógica em JavaScript puro (Vanilla JS) e Fetch API
+```json
+{
+  "nomeHospede": "Teste CRUD - Ana Silva Atualizada",
+  "dataCheckin": "2026-12-10",
+  "dataCheckout": "2026-12-18",
+  "numeroQuarto": 202,
+  "quantidadeHospedes": 3,
+  "status": "Concluída"
+}
 ```
 
+### Quartos (`/api/quartos` — Rotas da AP1)
+
+| Método | Rota | Descrição | Status HTTP Esperados |
+|---|---|---|---|
+| `GET` | `/` | Retorna o `index.html` no navegador ou mensagem de status em clientes HTTP | `200 OK` |
+| `GET` | `/api/quartos` | Lista os quartos | `200 OK` |
+| `GET` | `/api/quarto/{id}` | Busca um quarto pelo ID | `200 OK`, `404 Not Found` |
+| `POST` | `/api/quartos` | Cadastra um novo quarto | `201 Created` |
+| `PUT` | `/api/quartos/{id}` | Atualiza um quarto existente | `200 OK`, `404 Not Found` |
+| `DELETE` | `/api/quartos/{id}` | Remove um quarto | `204 No Content`, `404 Not Found` |
+
 ---
 
-## Vídeos de Demonstração
+## Persistência
 
-### Vídeo da AP1:
-Link: 
+- **SQLite:** O banco de dados é armazenado localmente no arquivo `pousada.db` (definido em `appsettings.json` pela chave `DefaultConnection: "Data Source=pousada.db"`).
+- **Entity Framework Core:** O `AppDbContext` é registrado no container de injeção de dependência via `builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString))` e injetado diretamente nos endpoints de `/api/reservas`.
+- **Migrations:** Ao iniciar a aplicação, o bloco `db.Database.Migrate()` garante que o banco e a tabela `Reservas` sejam criados e populados com os dados iniciais caso ainda não existam.
+- **Persistência após reinício:** Como os dados são gravados em disco no arquivo `pousada.db` por meio do `await db.SaveChangesAsync()`, ao encerrar o processo da API (`Ctrl+C`) e iniciá-lo novamente com `dotnet run`, todos os registros criados ou atualizados continuam disponíveis para consulta.
 
-### Vídeo da AP2:
-Link: https://youtu.be/uz5trOL_4c0
+---
+
+## Testes no Bruno
+
+A Collection oficial da AS está localizada em formato nativo na pasta:
+
+```text
+bruno/API Pousada AS/
+```
+
+### Como abrir e executar no Bruno
+
+1. Abra o aplicativo **Bruno**.
+2. Clique em **Open Collection** e selecione a pasta `bruno/API Pousada AS` dentro do repositório.
+3. No canto superior direito do Bruno, selecione o ambiente **`Local`** (configurado em `environments/Local.bru` com `baseUrl = http://localhost:5050`).
+4. Certifique-se de que a API está em execução (`dotnet run`).
+5. Execute as requisições na ordem numérica:
+   - **`01 - Listar Reservas`**: Verifica o retorno `200 OK` com a lista inicial.
+   - **`02 - Criar Reserva`**: Envia o `POST` (`201 Created`). O script pós-resposta (`script:post-response`) salva automaticamente o ID retornado na variável `{{idCriado}}`.
+   - **`03 - Buscar Reserva Criada`**: Consulta `GET /api/reservas/{{idCriado}}` (`200 OK`).
+   - **`04 - Atualizar Reserva`**: Atualiza os dados via `PUT /api/reservas/{{idCriado}}` (`200 OK`).
+   - **`05 - Confirmar Atualizacao`**: Consulta novamente o registro atualizado (`200 OK`).
+   - **`06 - Excluir Reserva`**: Remove o registro via `DELETE /api/reservas/{{idCriado}}` (`204 No Content`).
+   - **`07 - Confirmar Exclusao (404)`**: Tenta consultar o ID excluído e valida o retorno `404 Not Found`.
+6. **Teste de Persistência após reiniciar a API:**
+   - Execute **`08 - Criar Reserva para Teste de Persistencia`** (`201 Created`). O ID retornado é salvo automaticamente na variável `{{idPersistencia}}`.
+   - No terminal onde a API está rodando, pressione `Ctrl+C` para encerrar completamente o servidor.
+   - Inicie a API novamente com `dotnet run`.
+   - Execute **`09 - Consultar Reserva Apos Reiniciar API`** (`GET /api/reservas/{{idPersistencia}}`) e confirme o retorno `200 OK` com os mesmos dados gravados antes do reinício.
+
+---
+
+## Vídeo de demonstração — AS
+
+> **[PENDENTE]** O link do vídeo de demonstração da AS será inserido aqui após a gravação e publicação.
+
+### Histórico de Vídeos Anteriores
+- **AP1:** https://drive.google.com/drive/folders/1mQLH6qK3THz5VH08QcmeXsywz1Qvaqy5?usp=sharing
+- **AP2:** https://youtu.be/uz5trOL_4c0
